@@ -9,6 +9,7 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
+  this.inputManager.on("undo", this.undo.bind(this));
 
   this.setup();
 }
@@ -57,6 +58,7 @@ GameManager.prototype.setup = function () {
     // Add the initial tiles
     this.addStartTiles();
   }
+    this.history = [];
 
   // Update the actuator
   this.actuate();
@@ -191,7 +193,15 @@ GameManager.prototype.move = function (direction) {
     }
 
     this.actuate();
+    this.history.push(this.grid);
   }
+};
+
+GameManager.prototype.undo = function() {
+    var history = this.history;
+    if(history.length == 0) return;
+    var lastState = history.splice(history.length - 1, 1)[0];
+    this.grid = lastState;
 };
 
 // Get the vector representing the chosen direction

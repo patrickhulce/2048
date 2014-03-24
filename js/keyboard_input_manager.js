@@ -66,6 +66,12 @@ KeyboardInputManager.prototype.listen = function () {
     if (!modifiers && event.which === 82) {
       self.restart.call(self, event);
     }
+    if(event.which === 90) {
+      console.log("Z pushed");
+      
+        self.emit("undo");
+      
+    }
   });
 
   // Respond to button presses
