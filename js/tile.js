@@ -25,3 +25,13 @@ Tile.prototype.serialize = function () {
     value: this.value
   };
 };
+
+Tile.prototype.copy = function() {
+  var t = new Tile({}, null);
+  t.x = this.x;
+  t.y = this.y;
+  t.value = this.value;
+  t.previousPosition = {x: t.x, y: t.y};
+  t.mergedFrom = null;
+  return t;
+}

@@ -193,15 +193,35 @@ GameManager.prototype.move = function (direction) {
     }
 
     this.actuate();
-    this.history.push(this.grid);
+    
+    var gridCopy = this.grid.copy();
+    
+    this.history.push({score: this.score, grid: gridCopy});
+    console.log("Added history state");
+    console.log(gridCopy);
   }
 };
 
 GameManager.prototype.undo = function() {
+  console.log("undo called");
     var history = this.history;
-    if(history.length == 0) return;
-    var lastState = history.splice(history.length - 1, 1)[0];
-    this.grid = lastState;
+    if(history.length < 2) return;
+    var lastState = history.splice(history.length - 2, 2)[0];
+
+    this.score = Math.round(lastState.score * 9 / 10 - 5);
+    this.grid = lastState.grid;
+
+  this.actuator.actuate(this.grid, {
+    score:      this.score,
+    over:       this.over,
+    won:        this.won,
+    bestScore:  this.storageManager.getBestScore(),
+    terminated: this.isGameTerminated()
+  });
+
+    var gridCopy = this.grid.copy();
+    
+    this.history.push({score: this.score, grid: gridCopy});
 };
 
 // Get the vector representing the chosen direction
